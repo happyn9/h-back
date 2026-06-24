@@ -45,7 +45,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://h-learning-wine.vercel.app",
-        "https://hback-3.onrender.com"
+        "https://h-back.onrender.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
