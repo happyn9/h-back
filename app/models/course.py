@@ -17,9 +17,8 @@ class Course(Base):
     image_url = Column(String)
     tags = Column(JSON, nullable=True)
     is_premium = Column(Boolean, default=True)
-    monthly_price = Column(Float, default=0)
-    weekly_price = Column(Float, default=0)
-    daily_price = Column(Float, default=0)
+    standard_price = Column(Float, default=0)
+    premium_price = Column(Float, default=0)
     order_index = Column(Integer, default=1)
     course_requirements = Column(JSON, default=list)
     what_you_will_learn = Column(JSON, default=list)
@@ -29,5 +28,10 @@ class Course(Base):
 
     subscriptions = relationship("Subscription", back_populates="course", cascade="all, delete-orphan")
 
+    teacher_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    center_id = Column(Integer, ForeignKey("centers.id"), nullable=True)
+    delivery_mode = Column(String, default="online")  # online | offline | hybrid
+    center = relationship("Center", back_populates="courses")
+    teacher = relationship("User", back_populates="courses_taught")
 
 

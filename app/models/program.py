@@ -11,5 +11,6 @@ class Program(Base):
     code = Column(String, unique=True, nullable=False)
     semester = Column(String)
     is_active = Column(Boolean, default=True)
-
+    category = Column(String, nullable=False, default="IT")
+    language = Column(String, nullable=True)
     courses = relationship("Course", back_populates="program", cascade="all, delete-orphan")

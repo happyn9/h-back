@@ -139,3 +139,17 @@ def require_admin_pin(
         )
 
     return admin
+
+
+# ================= TEACHER =================
+def require_teacher(user: User = Depends(get_current_user)):
+    if not user.role or user.role.lower() != "teacher":
+        raise HTTPException(status_code=403, detail="Teacher only")
+    return user
+
+
+# ================= STUDENT =================
+def require_student(user: User = Depends(get_current_user)):
+    if not user.role or user.role.lower() != "student":
+        raise HTTPException(status_code=403, detail="Student only")
+    return user

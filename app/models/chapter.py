@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey,DateTime
 from app.core.database import Base
 from sqlalchemy.orm import relationship
 
@@ -13,3 +13,8 @@ class Chapter(Base):
     description = Column(String, nullable=True)
     course = relationship("Course", back_populates="chapters")
     lessons = relationship("Lesson",back_populates="chapter",cascade="all, delete-orphan",order_by="Lesson.order_index")
+    status = Column(String, default="pending")  # pending | approved | rejected
+    rejection_reason = Column(String, nullable=True) 
+    submitted_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    reviewed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    reviewed_at = Column(DateTime, nullable=True)

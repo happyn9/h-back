@@ -13,7 +13,7 @@ class Lesson(Base):
     description = Column(String, nullable=True)
 
     type = Column(String, nullable=False, default="video")  # video | pdf | quiz
-
+    pdf_url = Column(String, nullable=True)
     video_url = Column(String, nullable=True)
     duration_seconds = Column(Integer, nullable=True)
 

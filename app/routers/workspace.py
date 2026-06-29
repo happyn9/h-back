@@ -4,7 +4,7 @@ from typing import List, Optional
 from app.core.database import get_db
 from app.dependencies import get_current_user
 from app.models.workspace import Workspace, WorkspaceMember, WorkspaceMessage
-from app.models.user import User  # ✅ pour rechercher par email/username
+from app.models.user import User
 from app.schemas.workspace import (
     WorkspaceCreate, WorkspaceOut,
     WorkspaceMemberCreate, WorkspaceMemberOut,
@@ -14,11 +14,6 @@ from app.schemas.workspace import (
 )
 
 router = APIRouter(prefix="/workspaces", tags=["Workspaces"])
-
-
-# ================================================================
-# WORKSPACE
-# ================================================================
 
 @router.post("/", response_model=WorkspaceOut)
 def create_workspace(

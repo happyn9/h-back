@@ -44,11 +44,13 @@ def get_course(course_id: int, db: Session = Depends(get_db)):
         "title": course.title,
         "description": course.description,
         "image_url": course.image_url,
-        "monthly_price": course.monthly_price,
+        "standard_price":course.standard_price,
+        "premium_price": course.premium_price,
         "course_requirements": course.course_requirements,
         "what_you_will_learn": course.what_you_will_learn,
         "chapters": []
     }
+
 
 
     for chapter in chapters:

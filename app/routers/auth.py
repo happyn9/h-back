@@ -75,8 +75,6 @@ def register(data: RegisterSchema, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
-    print(f"[OTP] Stored code: {user.otp_code}")
-
     try:
         send_email(data.email, "Welcome to H-Learning!", welcome_email(data.name))
         send_email(data.email, "Your OTP Code", otp_email(otp_code))
@@ -93,15 +91,21 @@ def login(data: LoginSchema, response: Response, db: Session = Depends(get_db)):
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=404, detail="Wrong Email or password")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.utcnow()
     if not (user.otp_code and user.otp_expires_at and user.otp_expires_at > now):
         otp_code = str(random.randint(100000, 999999))
+
+
         user.otp_code = otp_code
         user.otp_expires_at = now + timedelta(minutes=5)
         db.commit()
         db.refresh(user)
+
+        print(f"otp {user.otp_code}")
+
         try:
             send_email(user.email, "Your OTP Code", otp_email(otp_code))
+            
         except Exception as e:
             print(f"[EMAIL] Failed: {e}")
 
@@ -128,8 +132,6 @@ def resend_otp(data: dict, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
-    print(f"[OTP] Resent code for {email}: {user.otp_code}")
-
     try:
         send_email(email, "Your new OTP Code", otp_email(otp_code))
     except Exception as e:
@@ -153,7 +155,7 @@ def verify_otp(data: VerifyOTPSchema, response: Response, db: Session = Depends(
     if user.otp_code != data.otp:
         raise HTTPException(400, "Invalid OTP")
 
-    if user.otp_expires_at and datetime.now(timezone.utc) > user.otp_expires_at:
+    if user.otp_expires_at and datetime.utcnow() > user.otp_expires_at:
         raise HTTPException(400, "OTP expired")
 
     user.email_verified = True

@@ -13,10 +13,11 @@ class Subscription(Base):
     price = Column(Float, nullable=False)
     billing_type = Column(String(20), nullable=False)  # "monthly" | "yearly"
     course_id = Column(Integer, ForeignKey("courses.id"), nullable=True)
-    
+    has_ai_assistant = Column(Boolean, default=False)
+    ai_monthly_question_limit = Column(Integer, nullable=True)  # null = illimité
     # Relation vers Course
     course = relationship("Course", back_populates="subscriptions")
-    
+    mode = Column(String, nullable=False, default="standard")  # "standard" | "premium"
     # Relation vers UserSubscription
     user_subscriptions = relationship("UserSubscription", back_populates="subscription")
 

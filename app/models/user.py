@@ -35,3 +35,4 @@ class User(Base):
     progress = relationship("UserLessonProgress", back_populates="user", cascade="all, delete-orphan")
     activity = relationship("UserActivity", back_populates="user", cascade="all, delete-orphan")
     streaks = relationship("UserStreak", back_populates="user", cascade="all, delete-orphan")
+    courses_taught = relationship("Course", back_populates="teacher")
