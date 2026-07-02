@@ -9,7 +9,12 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app.core.database import Base # adapte si besoin
+from app.core.database import Base  # adapte si besoin
+
+# ⚠️ IMPORTANT : il faut importer les modèles pour qu'ils s'enregistrent
+# dans Base.metadata avant qu'Alembic ne le lise. Sans cette ligne,
+# Base.metadata reste vide et autogenerate pense qu'il faut TOUT supprimer.
+import app.models  # noqa: F401
 
 
 # this is the Alembic Config object, which provides
