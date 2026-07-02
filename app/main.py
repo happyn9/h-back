@@ -33,7 +33,6 @@ from app.models import *
 # =================== APP ===================
 app = FastAPI(title="H-Learning API 🚀")
 
-Base.metadata.create_all(bind=engine)
 # =================== MIDDLEWARE ===================
 class COOPMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
