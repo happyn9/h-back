@@ -353,3 +353,36 @@ def get_center_occupancy(
         "available": max(0, center.capacity - enrolled),
         "is_full": enrolled >= center.capacity,
     }
+
+
+import os
+
+# =========================
+# BOOTSTRAP ADMIN (TEMPORAIRE — à supprimer après usage)
+# =========================
+@router.post("/bootstrap")
+def bootstrap_admin(
+    secret: str = Body(..., embed=True),
+    db: Session = Depends(get_db)
+):
+    expected_secret = os.environ.get("ADMIN_BOOTSTRAP_SECRET")
+    if not expected_secret or secret != expected_secret:
+        raise HTTPException(403, "Invalid secret")
+
+    existing = db.query(User).filter(User.email == "happyneph12@gmail.com").first()
+    if existing:
+        raise HTTPException(400, "Admin already exists")
+
+    admin_user = User(
+        name="happy",
+        email="happyneph12@gmail.com",
+        password_hash=hash_password("31052003Ne@"),
+        role="admin",
+        email_verified=True,
+        onboarding_completed=True,
+    )
+    db.add(admin_user)
+    db.commit()
+    db.refresh(admin_user)
+
+    return {"message": "Admin created", "id": admin_user.id}
