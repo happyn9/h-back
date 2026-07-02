@@ -4,11 +4,10 @@ sqlalchemy
 pydantic
 bcrypt
 python-dotenv
-python-jose
-jose
+python-jose[cryptography]
 email_validator
 pydantic_settings
-passlib
+passlib[argon2]
 python-multipart
 openai
 google-auth
