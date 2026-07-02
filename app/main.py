@@ -141,7 +141,7 @@ def read_root():
 
 
 
-"""from app.core.database import SessionLocal
+from app.core.database import SessionLocal
 from app.models.user import User
 from app.core.security import hash_password
 
@@ -154,4 +154,4 @@ admin_user = User(
 )
 db.add(admin_user)
 db.commit()
-db.close()"""
+db.close()
