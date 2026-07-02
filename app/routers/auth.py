@@ -91,10 +91,9 @@ def login(data: LoginSchema, response: Response, db: Session = Depends(get_db)):
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=404, detail="Wrong Email or password")
 
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     if not (user.otp_code and user.otp_expires_at and user.otp_expires_at > now):
         otp_code = str(random.randint(100000, 999999))
-
 
         user.otp_code = otp_code
         user.otp_expires_at = now + timedelta(minutes=5)
@@ -105,7 +104,7 @@ def login(data: LoginSchema, response: Response, db: Session = Depends(get_db)):
 
         try:
             send_email(user.email, "Your OTP Code", otp_email(otp_code))
-            
+
         except Exception as e:
             print(f"[EMAIL] Failed: {e}")
 
@@ -155,7 +154,7 @@ def verify_otp(data: VerifyOTPSchema, response: Response, db: Session = Depends(
     if user.otp_code != data.otp:
         raise HTTPException(400, "Invalid OTP")
 
-    if user.otp_expires_at and datetime.utcnow() > user.otp_expires_at:
+    if user.otp_expires_at and datetime.now(timezone.utc) > user.otp_expires_at:
         raise HTTPException(400, "OTP expired")
 
     user.email_verified = True
