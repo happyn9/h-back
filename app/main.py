@@ -48,10 +48,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://h-learning-wine.vercel.app",
-        "https://h-back.onrender.com",
-        "http://localhost:5173",
-        "http://127.0.0.1:8000",
-        "https://feel-landed-legroom.ngrok-free.dev"
+        "https://h-back-2.onrender.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
