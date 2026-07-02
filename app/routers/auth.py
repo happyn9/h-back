@@ -289,9 +289,9 @@ def google_login(data: dict, response: Response, db: Session = Depends(get_db)):
             name=name,
             email=email,
             password_hash=hash_password(secrets.token_hex(16)),
-            email_verified=True,          # ✅ Google vérifie déjà l'email
-            onboarding_completed=False,   # ✅ explicite pour éviter NULL
-            role="student",               # ✅ valeur par défaut explicite
+            email_verified=True,        
+            onboarding_completed=False,  
+            role="student",               
         )
         db.add(user)
         db.commit()
