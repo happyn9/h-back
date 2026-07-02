@@ -6,16 +6,18 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.core.database import SessionLocal
 from app.models.subscription import Subscription
 
-db = SessionLocal()
 
 # Récupère les course_id existants d'abord
 from app.models.course import Course
-courses = db.query(Course).all()
-print(f"Cours trouvés: {[(c.id, c.title) for c in courses]}")
 
-# Crée un plan monthly + yearly pour chaque cours
-subs = []
-for course in courses:
+def seed_data():
+  db = SessionLocal()
+  courses = db.query(Course).all()
+  print(f"Cours trouvés: {[(c.id, c.title) for c in courses]}")
+
+  # Crée un plan monthly + yearly pour chaque cours
+  subs = []
+  for course in courses:
     subs.append(Subscription(
         name=f"{course.title} — Monthly",
         description=f"Accès mensuel à {course.title}",
@@ -35,8 +37,7 @@ for course in courses:
         has_ai_assistant=True,
         ai_monthly_question_limit=100,
     ))
-
-db.add_all(subs)
-db.commit()
-print(f"✅ {len(subs)} subscriptions créées")
-db.close()
+  db.add_all(subs)
+  db.commit()
+  print(f"✅ {len(subs)} subscriptions créées")
+  db.close()
