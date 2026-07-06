@@ -18,3 +18,4 @@ psycopg2
 alembic
 pywebpush 
 py-vapid
+apscheduler

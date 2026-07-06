@@ -59,6 +59,10 @@ def register(data: RegisterSchema, db: Session = Depends(get_db)):
     otp_code = str(random.randint(100000, 999999))
     otp_expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
 
+    # Si le frontend envoie la langue courante d'i18n (recommandé, voir note
+    # plus bas), on la stocke tout de suite. Sinon, "en" par défaut.
+    user_language = getattr(data, "language", None) or "en"
+
     user = User(
         name=data.name,
         email=data.email,
@@ -68,6 +72,7 @@ def register(data: RegisterSchema, db: Session = Depends(get_db)):
         email_verified=False,
         onboarding_completed=False,
         role="student",
+        language=user_language,
     )
     db.add(user)
     db.flush()
@@ -75,8 +80,11 @@ def register(data: RegisterSchema, db: Session = Depends(get_db)):
     db.refresh(user)
 
     try:
-        send_email(data.email, "Welcome to H-Learning!", welcome_email(data.name))
-        send_email(data.email, "Your OTP Code", otp_email(otp_code))
+        subject, html = welcome_email(data.name, lang=user.language)
+        send_email(data.email, subject, html)
+
+        subject, html = otp_email(otp_code, lang=user.language)
+        send_email(data.email, subject, html)
     except Exception as e:
         print(f"[EMAIL] Failed: {e}")
 
@@ -102,8 +110,8 @@ def login(data: LoginSchema, response: Response, db: Session = Depends(get_db)):
         print(f"otp {user.otp_code}")
 
         try:
-            send_email(user.email, "Your OTP Code", otp_email(otp_code))
-
+            subject, html = otp_email(otp_code, lang=user.language or "en")
+            send_email(user.email, subject, html)
         except Exception as e:
             print(f"[EMAIL] Failed: {e}")
 
@@ -131,7 +139,8 @@ def resend_otp(data: dict, db: Session = Depends(get_db)):
     db.refresh(user)
 
     try:
-        send_email(email, "Your new OTP Code", otp_email(otp_code))
+        subject, html = otp_email(otp_code, lang=user.language or "en")
+        send_email(email, subject, html)
     except Exception as e:
         print(f"[EMAIL] Failed: {e}")
 

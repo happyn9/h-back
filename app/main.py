@@ -4,7 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from typing import List
 from pydantic import BaseModel
 from datetime import date, timedelta
-
+from app.core.scheduler import start_scheduler, stop_scheduler
+from app.routers.preferences import router as preferences_router
 from app.routers.auth import router as auth_router
 from app.routers.programs import router as programs_router
 from app.routers.courses import router as courses_router
@@ -65,6 +66,7 @@ app.include_router(premium_router)
 app.include_router(dashboard_router, prefix="/dashboard")
 app.include_router(recommendations_router, prefix="/recommendations")
 app.include_router(courses_router)
+app.include_router(preferences_router)
 app.include_router(lessons_router)
 app.include_router(admin_router)
 app.include_router(notification_router)
@@ -88,6 +90,13 @@ def startup():
     print("🚀 App started - DB managed by Alembic")
     seed_data()
 
+@app.on_event("startup")
+def on_startup():
+    start_scheduler()
+
+@app.on_event("shutdown")
+def on_shutdown():
+    stop_scheduler()
 
 # =================== SCHEMAS (OK TEMPORAIRE) ===================
 class Summary(BaseModel):

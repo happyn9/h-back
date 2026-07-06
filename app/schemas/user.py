@@ -7,6 +7,7 @@ class RegisterSchema(BaseModel):
     email: EmailStr
     password: str
     photo_url: Optional[str] = None
+    language: Optional[str] = "en"
 
 
 class LoginSchema(BaseModel):
