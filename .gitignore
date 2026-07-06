@@ -18,4 +18,5 @@ uploads/
 
 # Alembic cache
 alembic/__pycache__/
-EOF
+EOFvapid_keys/
+.env

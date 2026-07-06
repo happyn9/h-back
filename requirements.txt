@@ -16,3 +16,5 @@ sendgrid
 argon2_cffi
 psycopg2
 alembic
+pywebpush 
+py-vapid

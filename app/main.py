@@ -21,7 +21,9 @@ from app.routers.payment import router as payment_router
 from app.routers.workspace import router as workspace_router
 from app.routers.student import router as student_router
 from app.routers.teacher import router as teacher_router
+from app.routers.notifications import router as notification_router
 from app.seeds.seed_data import seed_data
+
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -65,6 +67,7 @@ app.include_router(recommendations_router, prefix="/recommendations")
 app.include_router(courses_router)
 app.include_router(lessons_router)
 app.include_router(admin_router)
+app.include_router(notification_router)
 app.include_router(chapters_router)
 app.include_router(ai_router)
 app.include_router(programs_router, prefix="/programs")

@@ -22,14 +22,19 @@ class Settings(BaseSettings):
     # 📧 SendGrid
     SENDGRID_API_KEY: str = Field(..., env="SENDGRID_API_KEY")
 
-    # 💳 Flutterwave — AJOUT
+    # 💳 Flutterwave
     FLUTTERWAVE_SECRET_KEY: str = Field(..., env="FLUTTERWAVE_SECRET_KEY")
     FRONTEND_URL: str = Field(default="http://localhost:5173", env="FRONTEND_URL")
     BACKEND_URL: str = Field(default="http://localhost:8000", env="BACKEND_URL")
     FLUTTERWAVE_WEBHOOK_HASH: str = Field(..., env="FLUTTERWAVE_WEBHOOK_HASH")
 
+    # 🔔 Push Notifications (VAPID)
+    VAPID_PRIVATE_KEY_PATH: str = Field(..., env="VAPID_PRIVATE_KEY_PATH")
+    VAPID_PUBLIC_KEY: str = Field(..., env="VAPID_PUBLIC_KEY")
+    VAPID_CLAIMS_EMAIL: str = Field(..., env="VAPID_CLAIMS_EMAIL")
+
     class Config:
         env_file = ".env"
-        extra = "ignore"   
+        extra = "ignore"
 
 settings = Settings()

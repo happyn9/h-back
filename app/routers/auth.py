@@ -15,8 +15,7 @@ import os
 from uuid import uuid4
 import secrets
 import random
-from google.oauth2 import id_token
-from google.auth.transport import requests
+import requests as http_requests  # appels HTTP vers l'API Google (tokeninfo / userinfo)
 
 from app.models.user import User
 from app.schemas.user import (
@@ -264,14 +263,42 @@ def update_profile(
 
 
 # ================= GOOGLE LOGIN =================
+# Le front envoie désormais un access_token OAuth (via useGoogleLogin),
+# plus un id_token/credential JWT. On ne peut donc plus utiliser
+# id_token.verify_oauth2_token ici (ça n'accepte que des JWT).
+#
+# À la place :
+# 1. On vérifie via /tokeninfo que ce token a bien été émis pour NOTRE
+#    client Google (champ "aud") — sans ça, un access_token obtenu pour
+#    une autre appli Google pourrait être accepté par erreur.
+# 2. On récupère le profil (email, nom) via /userinfo avec ce token.
 @router.post("/google")
 def google_login(data: dict, response: Response, db: Session = Depends(get_db)):
+    access_token = data.get("access_token")
+    if not access_token:
+        raise HTTPException(400, "Missing access_token")
+
     try:
-        idinfo = id_token.verify_oauth2_token(
-            data["token"],
-            requests.Request(),
-            GOOGLE_CLIENT_ID
+        tokeninfo_resp = http_requests.get(
+            "https://www.googleapis.com/oauth2/v3/tokeninfo",
+            params={"access_token": access_token},
+            timeout=5,
         )
+        tokeninfo_resp.raise_for_status()
+        tokeninfo = tokeninfo_resp.json()
+
+        if tokeninfo.get("aud") != GOOGLE_CLIENT_ID:
+            raise HTTPException(400, "Invalid Google token")
+
+        userinfo_resp = http_requests.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            headers={"Authorization": f"Bearer {access_token}"},
+            timeout=5,
+        )
+        userinfo_resp.raise_for_status()
+        idinfo = userinfo_resp.json()
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"[GOOGLE] Token verification failed: {e}")
         raise HTTPException(400, "Invalid Google token")
@@ -297,7 +324,7 @@ def google_login(data: dict, response: Response, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(user)
     else:
-        # Utilisateur existant — s'assurer que email_verified est True
+
         if not user.email_verified:
             user.email_verified = True
             db.commit()

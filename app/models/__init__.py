@@ -13,3 +13,4 @@ from app.models.payment import Payment
 from app.models.ai_usage import AIUsage
 from app.models.course_purchase import CoursePurchase
 from app.models.lesson_purchase import LessonPurchase
+from app.models.notification import Notification,PushSubscription
