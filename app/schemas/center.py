@@ -5,7 +5,7 @@ class CenterBase(BaseModel):
     name: str
     address: Optional[str] = None
     city: Optional[str] = None
-    capacity: Optional[int] = None 
+    capacity: Optional[int] = None
     is_active: bool = True
 
 class CenterCreate(CenterBase):
@@ -14,3 +14,11 @@ class CenterCreate(CenterBase):
 class CenterOut(CenterBase):
     id: int
     model_config = {"from_attributes": True}
+
+
+class CenterUpdate(BaseModel):
+    name: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    capacity: Optional[int] = None
+    is_active: Optional[bool] = None

@@ -147,3 +147,52 @@ def create_notification(
         db.commit()
 
     return {"status": "created", "id": notif.id}
+
+
+from app.schemas.notification import NotificationBulkCreate, NotificationBulkResult
+
+@router.post("/broadcast", response_model=NotificationBulkResult, status_code=201)
+def broadcast_notification(
+    payload: NotificationBulkCreate,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+
+    if payload.all_students:
+        targets = db.query(User).filter(User.role == "student").all()
+    elif payload.center_id is not None:
+        targets = db.query(User).filter(
+            User.role == "student",
+            User.center_id == payload.center_id
+        ).all()
+    elif payload.user_ids:
+        targets = db.query(User).filter(User.id.in_(payload.user_ids)).all()
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Specify user_ids, center_id, or all_students"
+        )
+
+    if not targets:
+        raise HTTPException(status_code=404, detail="No matching users found")
+
+    sent_count = 0
+    for user in targets:
+        notif = Notification(
+            user_id=user.id,
+            title=payload.title,
+            body=payload.body,
+            url=payload.url,
+            type=payload.type,
+        )
+        db.add(notif)
+        db.flush()  
+
+        if payload.send_push:
+            send_push_to_user(db, user.id, payload.title, payload.body, payload.url or "/")
+            notif.is_pushed = True
+
+        sent_count += 1
+
+    db.commit()
+    return {"status": "sent", "sent_count": sent_count}

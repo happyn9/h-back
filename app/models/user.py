@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, JSON
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, JSON, ForeignKey
 from sqlalchemy.sql import func
 from app.core.database import Base
 from sqlalchemy.orm import relationship
@@ -25,9 +25,10 @@ class User(Base):
     academic = Column(JSON, default=lambda: {})
     onboarding_completed = Column(Boolean, default=False)
 
-    # ← NOUVEAU
     otp_code = Column(String, nullable=True)
     otp_expires_at = Column(DateTime(timezone=True), nullable=True)
+
+    center_id = Column(Integer, ForeignKey("centers.id"), nullable=True)
 
     # Relations
     subscriptions = relationship("UserSubscription", back_populates="user")
@@ -39,3 +40,5 @@ class User(Base):
     language = Column(String, default="en", server_default="en")
     push_subscriptions = relationship("PushSubscription", back_populates="user", cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+
+    center = relationship("Center", back_populates="students")

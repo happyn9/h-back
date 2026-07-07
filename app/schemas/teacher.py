@@ -4,7 +4,7 @@ from typing import Optional
 class TeacherCreate(BaseModel):
     name: str
     email: EmailStr
-    password: str  # mot de passe initial, le prof pourra le changer après
+    password: str 
     photo_url: Optional[str] = None
 
 class TeacherOut(BaseModel):
@@ -15,3 +15,10 @@ class TeacherOut(BaseModel):
     is_active: bool
 
     model_config = {"from_attributes": True}
+
+
+class TeacherUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    photo_url: Optional[str] = None
+    is_active: Optional[bool] = None

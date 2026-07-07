@@ -5,8 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.dependencies import require_student
 from app.core.flutterwave import initiate_payment
-from app.utils.center_capacity import check_center_has_space
-
+from app.utils.center_capacity import check_center_has_enrollment_space
 from app.models.course import Course
 from app.models.program import Program
 from app.models.chapter import Chapter
@@ -118,7 +117,7 @@ def enroll_course(
     if existing:
         raise HTTPException(status_code=400, detail="Already enrolled in this course")
 
-    if course.center_id and not check_center_has_space(db, course.center_id):
+    if course.center_id and not check_center_has_enrollment_space(db, course.center_id):
         raise HTTPException(status_code=400, detail="This center is full (30/30 learners)")
 
     amount = course.standard_price if data.mode == "standard" else course.premium_price

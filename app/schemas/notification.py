@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 
 class PushSubscriptionKeys(BaseModel):
@@ -37,3 +37,21 @@ class NotificationCreate(BaseModel):
 class NotificationListOut(BaseModel):
     notifications: list[NotificationOut]
     unread_count: int
+
+
+class NotificationBulkCreate(BaseModel):
+
+    user_ids: Optional[List[int]] = None
+    center_id: Optional[int] = None
+    all_students: bool = False
+
+    title: str
+    body: str
+    url: Optional[str] = None
+    type: str = "reminder"  # "reminder" | "motivation" | "info"
+    send_push: bool = True
+
+
+class NotificationBulkResult(BaseModel):
+    status: str
+    sent_count: int
