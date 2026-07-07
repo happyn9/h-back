@@ -15,8 +15,7 @@ class WorkspaceOut(WorkspaceBase):
     creator_id: int
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 # ---------------- WORKSPACE MEMBER ----------------
 class WorkspaceMemberBase(BaseModel):
@@ -31,8 +30,7 @@ class WorkspaceMemberOut(WorkspaceMemberBase):
     workspace_id: int
     joined_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 # ---------------- WORKSPACE MESSAGE ----------------
 class WorkspaceMessage(BaseModel):
@@ -51,8 +49,7 @@ class WorkspaceMessageOut(WorkspaceMessage):
     sender_id: int
     timestamp: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 # ---------------- WORKSPACE ACTIVITY ----------------
 class WorkspaceActivityBase(BaseModel):
@@ -67,8 +64,7 @@ class WorkspaceActivityOut(WorkspaceActivityBase):
     user_id: int
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 # ---- Invitation par email ou username ----
