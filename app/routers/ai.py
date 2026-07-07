@@ -13,15 +13,21 @@ router = APIRouter(prefix="/ai", tags=["AI"])
 
 _MESSAGES = {
     "en": {
-        "no_ai_access": "Your current plan doesn't include AI assistant access.",
+        "subscribe_required": "You've used your 10 free questions this month. Subscribe to a plan with AI access to keep chatting.",
         "limit_reached": "You've reached your monthly AI question limit.",
         "rate_limit": "AI service is temporarily overloaded. Please try again shortly.",
     },
     "fr": {
-        "no_ai_access": "Ton abonnement actuel ne donne pas accès à l'assistant IA.",
+        "subscribe_required": "Tu as utilisé tes 10 questions gratuites ce mois-ci. Abonne-toi à un plan avec accès IA pour continuer.",
         "limit_reached": "Tu as atteint ta limite mensuelle de questions IA.",
         "rate_limit": "Le service IA est temporairement surchargé. Réessaie dans un instant.",
     },
+}
+
+# 402 Payment Required pour l'upsell abonnement, 429 pour un quota payant dépassé
+_STATUS_CODES = {
+    "subscribe_required": 402,
+    "limit_reached": 429,
 }
 
 
@@ -44,8 +50,7 @@ def chat(
     try:
         check_and_increment_quota(db, user.id)
     except QuotaExceeded as e:
-        status_code = 403 if e.reason == "no_ai_access" else 429
-        raise HTTPException(status_code, _MESSAGES[lang][e.reason])
+        raise HTTPException(_STATUS_CODES[e.reason], _MESSAGES[lang][e.reason])
 
     messages = [
         {"role": "system", "content": get_prompt(lang)},
