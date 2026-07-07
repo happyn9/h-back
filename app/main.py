@@ -22,6 +22,7 @@ from app.routers.payment import router as payment_router
 from app.routers.workspace import router as workspace_router
 from app.routers.student import router as student_router
 from app.routers.teacher import router as teacher_router
+from app.routers.health import router as health_router
 from app.routers.notifications import router as notification_router
 from app.seeds.seed_data import seed_data
 
@@ -67,6 +68,7 @@ app.include_router(dashboard_router, prefix="/dashboard")
 app.include_router(recommendations_router, prefix="/recommendations")
 app.include_router(courses_router)
 app.include_router(preferences_router)
+app.include_router(health_router)
 app.include_router(lessons_router)
 app.include_router(admin_router)
 app.include_router(notification_router)
