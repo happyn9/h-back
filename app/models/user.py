@@ -36,6 +36,6 @@ class User(Base):
     activity = relationship("UserActivity", back_populates="user", cascade="all, delete-orphan")
     streaks = relationship("UserStreak", back_populates="user", cascade="all, delete-orphan")
     courses_taught = relationship("Course", back_populates="teacher")
-    language = Column(String, default="en")
+    language = Column(String, default="en", server_default="en")
     push_subscriptions = relationship("PushSubscription", back_populates="user", cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")

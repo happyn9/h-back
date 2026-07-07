@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = Field(default="http://localhost:5173", env="FRONTEND_URL")
     BACKEND_URL: str = Field(default="http://localhost:8000", env="BACKEND_URL")
     FLUTTERWAVE_WEBHOOK_HASH: str = Field(..., env="FLUTTERWAVE_WEBHOOK_HASH")
+    
+    GROQ_API_KEY: str
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
 
     SCHEDULER_TIMEZONE: str = "Africa/Lusaka"
 
