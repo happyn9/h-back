@@ -14,7 +14,7 @@ google-auth
 requests
 sendgrid
 argon2_cffi
-psycopg2
+psycopg[binary]
 alembic
 pywebpush 
 py-vapid

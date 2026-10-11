@@ -20,3 +20,7 @@ uploads/
 alembic/__pycache__/
 EOFvapid_keys/
 .env
+
+# Private keys
+/private_key.pem
+/vapid_keys/private_key.pem
