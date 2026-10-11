@@ -19,3 +19,4 @@ alembic
 pywebpush 
 py-vapid
 apscheduler
+httpx
